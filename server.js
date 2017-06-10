@@ -29,8 +29,16 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 
+// Heroku addon mLab MongoDB
+var databaseUri = 'mongodb://localhost/scrapeTheNews';
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect("mongodb://localhost/scrapeTheNews");
+}
+
 // Database configuration with mongoose. when it runs a database is created
-mongoose.connect("mongodb://localhost/week18day3mongoose");
+//mongoose.connect("mongodb://localhost/scrapeTheNews");
 var db = mongoose.connection;
 
 // Show any mongoose errors
