@@ -31,10 +31,12 @@ app.use(express.static("public"));
 
 // Heroku addon mLab MongoDB
 var databaseUri = 'mongodb://localhost/scrapeTheNews';
+//var MONGODB_URI = 'mongodb://heroku_qf292kjk:heroku_1f292kj@ds031531.mlab.com:31531/heroku_1f292kjk';
 if (process.env.MONGODB_URI) {
+  // this executes if being executed in Heroku App
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-  mongoose.connect("mongodb://localhost/scrapeTheNews");
+  mongoose.connect(databaseUri);
 }
 
 // Database configuration with mongoose. when it runs a database is created
@@ -160,6 +162,7 @@ app.post("/articles/:id", function(req, res) {
 
 
 // Listen on port 3000
-app.listen(3000, function() {
-  console.log("App running on port 3000!");
+var port = process.env.PORT || 8080; // trying this for heroku
+app.listen(8080, function() {
+  console.log("App running on port 8080!");
 });
