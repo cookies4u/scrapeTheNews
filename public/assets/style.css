@@ -1,0 +1,69 @@
+#main-containery { 
+  background: url(coffeeNews.jpg) no-repeat center center fixed; 
+  background-size: cover;
+  font-weight: bolder; 
+}
+#logoArea {
+  /* margin: 100px 0px 100px 0px; */
+  min-height: 400px;
+}
+#articleArea {
+  background-color: darkorange;
+  padding-top: 20px;
+}
+#articleRow {
+  /* margin: 0px -300px 0px -300px; */
+}
+#wrapper {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5%;
+}
+#articles {
+  display: inline-block;
+  overflow: auto;
+  width: 60%;
+  height: 700px;
+}
+#notes {
+  float: right;
+  width: 30%;
+  color: white;
+}
+#titleinput, #bodyinput {
+  color: black;
+}
+#navi {
+  font-size: 20px;
+}
+textarea, input {
+  display: block;
+  width: 100%;
+  background-color: #FCF5C7;
+}
+input {
+  height: 36px;
+  font-size: 24px;
+}
+textarea {
+  height: 200px;
+  font-size: 20px;
+}
+p {
+  color: white;
+  font-size: 20px;
+}
+ul {
+  list-style-type: none;
+  display: block;
+  text-align: center;
+  padding-left: 16px;
+  text-decoration: none;
+}
+li {
+  display: block;
+  float: left;
+  text-align: center;
+  padding: 20px;
+}

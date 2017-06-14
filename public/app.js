@@ -1,50 +1,93 @@
-// Grab the articles as a json
-$.getJSON("/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-  }
-});
-
-
 // Whenever someone clicks a scrape button
 $(document).on("click", "#scrapeBtn", function() {
-  // Save the p tag that encloses the button
-  //var selected = $(this).parent();
-  // Make an AJAX GET request to delete the specific note
-  // this uses the data-id of the p-tag, which is linked to the specific note
-  $.ajax({
-    type: "GET",
-    url: "/scrape",
+  $("#articles").html("");
+  $("#notes").html("");
 
-    // On successful call
-    success: function(response) {
-      window.location = '/';
-      // Remove the p-tag from the DOM
-      //selected.remove();
-      // Clear the note and title inputs
-      //$("#note").val("");
-      //$("#title").val("");
-      // Make sure the #actionbutton is submit (in case it's update)
-      //$("#actionbutton").html("<button id='makenew'>Submit</button>");
-    }
-  });
+  $.get('scrape', {}, function (result) {
+      console.log("Scraping Results");
+      console.log(result);
+      alert("Scraping completed.  Found " + result.length  + " new article(s)." );
+
+      result.forEach(function(element) {
+          var $a = $('<a/>', {
+              "target" : "_blank",
+              "href" : element.link,
+              "text" : element.title
+          });
+          var $button = $('<button/>', {
+                  text: 'SAVE',
+                  class: 'btn'
+              });
+           $("#articles").prepend("<div>" + $button.get(0).outerHTML + "&nbsp&nbsp&nbsp" + $a.get(0).outerHTML + "</div>");
+      }, this);
+    })
+  
 });
 
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+// save button. Save an individual article based on html tag attributes from scrapeBtn action
+$(document).on("click", "#articles .btn", function() {
+  $.ajax({
+    method: "POST",
+    url: "/save",
+    data: {
+      // Value taken from title input
+      title: $(this).next("a").text(),
+      // Value taken from note textarea
+      link: $(this).next("a").attr("href")
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+      // Empty the notes section
+      //$("#notes").empty();
+    });
+    $(this).parent().remove();
+});
+
+// Grab the articles as a json when click saved articles button
+$(document).on("click", "#savedArticlesBtn", function() {
+  console.log("savedArticlesBtn");
+  $("#articles").html("");
+
+  $.getJSON("/articles", function(data) {
+    for (var i = 0; i < data.length; i++) { // For each one
+      // Display the apropos information on the page
+      $("#articles").append("<div> <button class='deleteBtn' data-id='"+ data[i]._id + "'>Delete</button>" + "<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p> </div>");
+    }
+  });
+
+});
+
+// delete button. Delete an individual article base on html tag attributes
+$(document).on("click", "#articles .deleteBtn", function() {
+  var thisId = $(this).attr("data-id");
+  $.ajax({
+    method: "GET",
+    url: "/delete/" + thisId
+  })
+    // With that done
+    .done(function(data) {
+      console.log(data);
+    });
+    $(this).parent().remove();
+});
+
+
+// Whenever someone clicks a p tag user can create note
+$(document).on("click", "#articles p", function() {
   // Empty the notes from the note section
   $("#notes").empty();
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
 
-  // Now make an ajax call for the Article
+  // ajax call for the Article
   $.ajax({
     method: "GET",
     url: "/articles/" + thisId
   })
-    // With that done, add the note information to the page
+    // add the note information to the page
     .done(function(data) {
       console.log(data);
       // The title of the article
@@ -66,12 +109,12 @@ $(document).on("click", "p", function() {
     });
 });
 
-// When you click the savenote button. The button is created everytime a P tag is clicked
+// savenote button. The button is created everytime a P tag is clicked
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Runs a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
     url: "/articles/" + thisId,
