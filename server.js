@@ -29,7 +29,7 @@ app.use("/", routes);
 
 // Heroku addon mLab MongoDB
 var databaseUri = 'mongodb://localhost/scrapeTheNews';
-//var MONGODB_URI = 'mongodb://heroku_qf292kjk:heroku_1f292kj@ds031531.mlab.com:31531/heroku_1f292kjk';
+
 if (process.env.MONGODB_URI) {
   // this executes if being executed in Heroku App
   mongoose.connect(process.env.MONGODB_URI);
